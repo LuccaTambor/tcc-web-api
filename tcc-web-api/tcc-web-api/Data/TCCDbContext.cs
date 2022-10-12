@@ -7,5 +7,6 @@ namespace tcc_web_api.Data {
         public TCCDbContext(DbContextOptions<TCCDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Developer> Developers { get; set; }
     }
 }

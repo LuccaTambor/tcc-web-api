@@ -15,6 +15,15 @@ namespace tcc_web_api.Controllers {
             _context = context;
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("GetDevelopers")]
+        public IActionResult GetDevs() {
+            var devs = _context.Developers.ToList();
+
+            return Ok(devs);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         [Route("createFirstUser")]
@@ -31,6 +40,28 @@ namespace tcc_web_api.Controllers {
             };
 
             _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("CreateDeveloper")]
+        public IActionResult CreateDeveloper() {
+            Developer newUser = new Developer {
+                Name = "Makoto",
+                Document = "12345678",
+                UserName = "makoto_01",
+                Password = "luckyhope",
+                ConfirmPassword = "luckyhope",
+                LockoutEnabled = false,
+                Email = "makoto.teste@mail.com",
+                EmailConfirmed = true,
+                Function = "Ultimate Lucky Student"
+            };
+
+            _context.Developers.Add(newUser);
             _context.SaveChanges();
 
             return Ok();
