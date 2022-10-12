@@ -8,5 +8,6 @@ namespace tcc_web_api.Data {
 
         public DbSet<User> Users { get; set; }
         public DbSet<Developer> Developers { get; set; }
+        public DbSet<Project> Projects { get; set; }
     }
 }
