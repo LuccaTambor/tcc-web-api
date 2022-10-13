@@ -8,6 +8,8 @@ namespace tcc_web_api.Models {
         public DateTime CreatedOn { get; set; }
         public DateTime? StartedOn { get; set; }
         public DateTime? ExpectedFinishDate { get; set; }
+        public int ManagerId { get; set; }
+        public virtual Manager Manager { get; set; }
 
         public Project() { 
             CreatedOn = DateTime.Now;

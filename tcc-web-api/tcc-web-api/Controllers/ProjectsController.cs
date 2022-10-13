@@ -20,13 +20,15 @@ namespace tcc_web_api.Controllers {
         [Route("createFirstProject")]
         public IActionResult CreateProject() {
             Project project = new Project {
-                Description = "Elden Ring 2: The Enemy is Now Other",
-                StartedOn = new DateTime(2022, 12, 02),
+                Description = "Glory For All",
+                StartedOn = new DateTime(2023, 01, 01),
             };
 
             _context.Projects.Add(project);
             _context.SaveChanges();
             return Ok();
         }
+
+        
     }
 }
