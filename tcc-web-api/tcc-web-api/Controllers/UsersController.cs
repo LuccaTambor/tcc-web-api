@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Drawing;
+using System.Net;
 using tcc_web_api.Data;
 using tcc_web_api.Models;
 
@@ -22,6 +25,15 @@ namespace tcc_web_api.Controllers {
             var devs = _context.Developers.ToList();
 
             return Ok(devs);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("GetManagerProjects")]
+        public IActionResult GetDevs(string id) {
+            var result = _context.Projects.FirstOrDefault(m => m.Manager.Id == id);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -65,6 +77,24 @@ namespace tcc_web_api.Controllers {
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("CreateManager")]
+        public IActionResult CreateManager(Manager manager) {
+            if(!ModelState.IsValid) {
+                return Content("Erro ao criar Gerente");
+            }
+
+            _context.Managers.Add(manager);
+
+            try {
+                _context.SaveChanges();
+                return Ok();
+            } catch(Exception ex) {
+                return Content(ex.Message);
+            }
         }
 
 
