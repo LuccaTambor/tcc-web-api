@@ -51,6 +51,7 @@ namespace tcc_web_api.Controllers {
                 EmailConfirmed = true,
             };
 
+            //created user
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
