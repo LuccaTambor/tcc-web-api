@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.Drawing;
 using System.Net;
 using tcc_web_api.Data;
@@ -23,14 +24,13 @@ namespace tcc_web_api.Controllers {
         [Route("GetDevelopers")]
         public IActionResult GetDevs() {
             var devs = _context.Developers.ToList();
-
             return Ok(devs);
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Route("GetManagerProjects")]
-        public IActionResult GetDevs(string id) {
+        public IActionResult GetProjectsFromManager(string id) {
             var result = _context.Projects.FirstOrDefault(m => m.Manager.Id == id);
 
             return Ok(result);
@@ -63,15 +63,15 @@ namespace tcc_web_api.Controllers {
         [Route("CreateDeveloper")]
         public IActionResult CreateDeveloper() {
             Developer newUser = new Developer {
-                Name = "Makoto",
-                Document = "12345678",
-                UserName = "makoto_01",
-                Password = "luckyhope",
-                ConfirmPassword = "luckyhope",
+                Name = "Kyoko",
+                Document = "987654321",
+                UserName = "detective_girl",
+                Password = "ultimate_dec",
+                ConfirmPassword = "ultimate_dec",
                 LockoutEnabled = false,
-                Email = "makoto.teste@mail.com",
+                Email = "kyoko.teste@mail.com",
                 EmailConfirmed = true,
-                Function = "Ultimate Lucky Student"
+                Function = "Ultimate Detective"
             };
 
             _context.Developers.Add(newUser);
