@@ -99,5 +99,24 @@ namespace tcc_web_api.Controllers {
         }
 
 
+        [HttpGet]
+        [Route("login")]
+        public IActionResult Login(string userName, string password) {
+
+            try {
+                var user = _context.Users.Where(u => u.UserName == userName).FirstOrDefault();
+
+                if(user == null)
+                    return NotFound("Não há usuário com este email");
+
+                if(!user.Password.Equals(password))
+                    return BadRequest("Senha incorreta");
+
+                return Ok(user);
+
+            } catch(Exception ex) {
+                return BadRequest(ex);
+            }    
+        }
     }
 }
