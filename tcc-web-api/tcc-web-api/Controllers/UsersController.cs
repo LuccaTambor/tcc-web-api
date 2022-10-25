@@ -83,14 +83,20 @@ namespace tcc_web_api.Controllers {
         [HttpPost]
         [AllowAnonymous]
         [Route("CreateManager")]
-        public IActionResult CreateManager(Manager manager) {
-            if(!ModelState.IsValid) {
-                return Content("Erro ao criar Gerente");
-            }
-
-            _context.Managers.Add(manager);
+        public IActionResult CreateManager() {
+            Manager manager = new Manager {
+                Name = "Lucca Tambor",
+                Document = "48387058831",
+                UserName = "LuccaTambor",
+                Password = "senha123",
+                ConfirmPassword = "senha123",
+                Designation = "Gerente de Projetos Sênior",
+                Email = "lucca.tambor@unesp.br",
+                PhoneNumber = "17991228040"
+            };
 
             try {
+                _context.Managers.Add(manager);
                 _context.SaveChanges();
                 return Ok();
             } catch(Exception ex) {

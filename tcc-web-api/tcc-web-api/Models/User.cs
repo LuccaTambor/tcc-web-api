@@ -7,7 +7,7 @@ namespace tcc_web_api.Models {
         public DateTime CreatedOn { get; set; }
 
         public User () {
-            CreatedOn = DateTime.Now;
+            CreatedOn = DateTime.UtcNow;
         }
     }
 }
