@@ -27,15 +27,6 @@ namespace tcc_web_api.Controllers {
             return Ok(devs);
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        [Route("GetManagerProjects")]
-        public IActionResult GetProjectsFromManager(string id) {
-            var result = _context.Projects.FirstOrDefault(m => m.Manager.Id == id);
-
-            return Ok(result);
-        }
-
         [HttpPost]
         [AllowAnonymous]
         [Route("createFirstUser")]

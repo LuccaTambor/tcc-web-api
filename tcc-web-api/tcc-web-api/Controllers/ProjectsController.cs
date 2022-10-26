@@ -30,6 +30,15 @@ namespace tcc_web_api.Controllers {
 
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("GetManagerProjects")]
+        public IActionResult GetProjectsFromManager(string id) {
+            var result = _context.Projects.Where(m => m.Manager.Id == id);
+
+            return Ok(result);
+        }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -51,8 +60,22 @@ namespace tcc_web_api.Controllers {
             return Ok();
         }
 
-        
+        [HttpPost]
+        [Route("CreateTestProject")]
+        public IActionResult CreateTestProject() {
+            var manager = _context.Managers.FirstOrDefault(m => m.UserName.Equals("LuccaTambor"));
 
-        
+            Project project = new Project {
+                Description = "Project Mega Blaster",
+                CreatedOn = DateTime.UtcNow,
+                StartedOn = new DateTime(2023, 5, 01),
+                ExpectedFinishDate = new DateTime(2026, 11, 11),
+                Manager = manager
+            };
+
+            _context.Projects.Add(project);
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }
