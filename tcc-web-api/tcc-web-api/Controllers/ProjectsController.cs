@@ -21,8 +21,8 @@ namespace tcc_web_api.Controllers {
         [HttpGet]
         [AllowAnonymous]
         [Route("getProjects")]
-        public IActionResult GetProject() {
-            var projects = _context.Projects.Include(p => p.Manager).ToList();
+        public IActionResult GetProjects() {
+            var projects = _context.Projects.Include(p => p.Manager).Include(p => p.Teams).ToList();
 
             var json = JsonConvert.SerializeObject(projects);
 
@@ -31,10 +31,20 @@ namespace tcc_web_api.Controllers {
         }
 
         [HttpGet]
+        [Route("getProject")]
+        public IActionResult GetProject(int id) {
+            var project = _context.Projects
+                .Include(p => p.Teams)
+                .SingleOrDefault(p => p.Id == id);
+
+            return Ok(project);
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         [Route("GetManagerProjects")]
         public IActionResult GetProjectsFromManager(string id) {
-            var result = _context.Projects.Where(m => m.Manager.Id == id);
+            var result = _context.Projects.Where(m => m.Manager.Id == id).Include(p => p.Teams);
 
             return Ok(result);
         }
@@ -75,6 +85,24 @@ namespace tcc_web_api.Controllers {
 
             _context.Projects.Add(project);
             _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("testTeam")]
+        public IActionResult TestTeam() {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == 4);
+
+            Team team = new Team {
+                TeamName = "Time Técninco",
+            };
+
+            var dev = _context.Developers.FirstOrDefault(d => d.Id == "61e79caa-8a22-4c58-8869-6891273d5ac7");
+
+            team.Developers.Add(dev);
+            project.Teams.Add(team);
+            _context.SaveChanges();
+
             return Ok();
         }
     }

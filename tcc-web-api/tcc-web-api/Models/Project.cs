@@ -9,9 +9,11 @@ namespace tcc_web_api.Models {
         public DateTime? StartedOn { get; set; }
         public DateTime? ExpectedFinishDate { get; set; }
         public Manager Manager { get; set; }
+        public ICollection<Team> Teams { get; set; }
 
         public Project() { 
             CreatedOn = DateTime.Now;
+            Teams = new HashSet<Team>();
         }
     }
 }
