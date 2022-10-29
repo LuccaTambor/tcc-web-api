@@ -29,5 +29,27 @@ namespace tcc_web_api.Controllers {
 
             return Ok(team);
         }
+
+        [HttpPost]
+        [Route("createTeam")]
+        public IActionResult CreateTeam(int projectId, string teamName) {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+
+            if(project == null) {
+                return BadRequest();
+            }
+
+            var team = new Team {
+                TeamName = teamName,
+            };
+
+            try {
+                project.Teams.Add(team);
+                _context.SaveChanges();
+                return Ok();
+            } catch(Exception ex) {
+                return Content(ex.Message);
+            }
+        }
     }
 }
