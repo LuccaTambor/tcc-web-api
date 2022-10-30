@@ -40,11 +40,27 @@ namespace tcc_web_api.Controllers {
             if(team == null || dev == null)
                 return BadRequest();
 
-            team.Developers.Add(dev);
-            dev.Teams.Add(team);
 
-            _context.SaveChanges();
-            return Ok();
+            try {
+                team.Developers.Add(dev);
+                dev.Teams.Add(team);
+
+                _context.SaveChanges();
+
+                var teamUpdated = _context.Teams
+                .Select(t => new {
+                    t.Id,
+                    t.TeamName,
+                    t.Developers,
+                    Project = _context.Projects.Where(p => p.Teams.Any(t => t.Id == teamId)).FirstOrDefault().Description
+                })
+                .FirstOrDefault(t => t.Id == teamId);
+
+                return Ok(teamUpdated);
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut]
@@ -54,18 +70,19 @@ namespace tcc_web_api.Controllers {
             var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
 
             //if(team != null) {
-            //    foreach (var developer in team.Developers) {
+            //    foreach(var developer in team.Developers) {
             //        if(developer.Id == devId) {
             //            team.Developers.Remove(developer);
             //        }
             //    }
             //}
 
-            team.Developers.Add(dev);
+            foreach(Developer d in team.Developers) {
+                _context.Developers.Attach(d);
 
-            _context.Teams.Attach(team);
-
-            team.Developers.Remove(dev);    
+                if(d.Id == devId)
+                    team.Developers.Remove(d);
+            }
 
             _context.SaveChanges();
             return Ok();
@@ -90,6 +107,21 @@ namespace tcc_web_api.Controllers {
                 return Ok();
             } catch(Exception ex) {
                 return Content(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("deleteTeam")]
+        public IActionResult DeleteTeam(int teamId) {
+            var team = _context.Teams.FirstOrDefault(d => d.Id == teamId);
+
+            try {
+                _context.Teams.Remove(team);
+                _context.SaveChanges();
+
+                return Ok();
+            } catch(Exception ex) {
+                return BadRequest(ex);
             }
         }
     }
