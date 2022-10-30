@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Drawing;
 using System.Net;
@@ -24,6 +25,19 @@ namespace tcc_web_api.Controllers {
         [Route("GetDevelopers")]
         public IActionResult GetDevs() {
             var devs = _context.Developers.ToList();
+            return Ok(devs);
+        }
+
+        [HttpGet]
+        [Route("getDevelopersNotOnTeam")]
+        public IActionResult GetDevsNotOnTeam(int teamId) {
+
+            var devs = _context.Developers.Include(d => d.Teams).Where(d => !d.Teams.Any(t => t.Id == teamId)).Select(d => new {
+                d.Id,
+                d.Name,
+                d.Function
+            });
+
             return Ok(devs);
         }
 
@@ -52,23 +66,12 @@ namespace tcc_web_api.Controllers {
         [HttpPost]
         [AllowAnonymous]
         [Route("CreateDeveloper")]
-        public IActionResult CreateDeveloper() {
-            Developer newUser = new Developer {
-                Name = "Kyoko",
-                Document = "987654321",
-                UserName = "detective_girl",
-                Password = "ultimate_dec",
-                ConfirmPassword = "ultimate_dec",
-                LockoutEnabled = false,
-                Email = "kyoko.teste@mail.com",
-                EmailConfirmed = true,
-                Function = "Ultimate Detective"
-            };
-
-            _context.Developers.Add(newUser);
+        public IActionResult CreateDeveloper([FromBody] Developer newDev) {
+            _context.Developers.Add(newDev);
             _context.SaveChanges();
 
-            return Ok();
+            var devs = _context.Developers.ToList();
+            return Ok(devs);
         }
 
         [HttpPost]

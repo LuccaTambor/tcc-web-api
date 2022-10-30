@@ -30,6 +30,47 @@ namespace tcc_web_api.Controllers {
             return Ok(team);
         }
 
+        [HttpPut]
+        [Route("addDevToTeam")]
+        public IActionResult addDevToTeam(string devId, int teamId) {
+            var team = _context.Teams.FirstOrDefault(t => t.Id == teamId);
+
+            var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
+
+            if(team == null || dev == null)
+                return BadRequest();
+
+            team.Developers.Add(dev);
+            dev.Teams.Add(team);
+
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("removeDevFromTeam")]
+        public IActionResult RemoveDevFromTeam(string devId, int teamId) {
+            var team = _context.Teams.FirstOrDefault(t => t.Id == teamId);
+            var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
+
+            //if(team != null) {
+            //    foreach (var developer in team.Developers) {
+            //        if(developer.Id == devId) {
+            //            team.Developers.Remove(developer);
+            //        }
+            //    }
+            //}
+
+            team.Developers.Add(dev);
+
+            _context.Teams.Attach(team);
+
+            team.Developers.Remove(dev);
+
+            _context.SaveChanges();
+            return Ok();
+        }
+
         [HttpPost]
         [Route("createTeam")]
         public IActionResult CreateTeam(int projectId, string teamName) {
