@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using tcc_web_api.Models;
+using Task = tcc_web_api.Models.Task;
 
 namespace tcc_web_api.Data {
     public class TCCDbContext : DbContext{
@@ -11,5 +12,6 @@ namespace tcc_web_api.Data {
         public DbSet<Project> Projects { get; set; }
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Team> Teams { get; set; }
+        public DbSet<Task> Tasks { get; set; }
     }
 }
