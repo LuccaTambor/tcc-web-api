@@ -24,7 +24,7 @@ namespace tcc_web_api.Controllers {
         [AllowAnonymous]
         [Route("GetDevelopers")]
         public IActionResult GetDevs() {
-            var devs = _context.Developers.ToList();
+            var devs = _context.Developers.OrderBy(d => d.Name).ToList();
             return Ok(devs);
         }
 
@@ -41,37 +41,21 @@ namespace tcc_web_api.Controllers {
             return Ok(devs);
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        [Route("createFirstUser")]
-        public IActionResult CreateUser() {
-            User newUser = new User {
-                Name = "Lucca Tambor",
-                UserName = "tambor",
-                Password = "senha123",
-                ConfirmPassword = "senha123",
-                LockoutEnabled = false,
-                NormalizedUserName = "tambor",
-                Email = "lucca.tambor@unesp.br",
-                EmailConfirmed = true,
-            };
-
-            //created user
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
-
-            return Ok();
-        }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("CreateDeveloper")]
         public IActionResult CreateDeveloper([FromBody] Developer newDev) {
-            _context.Developers.Add(newDev);
-            _context.SaveChanges();
 
-            var devs = _context.Developers.ToList();
-            return Ok(devs);
+            try {
+                _context.Developers.Add(newDev);
+                _context.SaveChanges();
+
+                var devs = _context.Developers.OrderBy(d => d.Name).ToList();
+                return Ok(devs);
+            } catch(Exception ex) {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPost]
@@ -98,25 +82,29 @@ namespace tcc_web_api.Controllers {
             }
         }
 
-
-        [HttpGet]
+        [HttpPost]
         [Route("login")]
-        public IActionResult Login(string userName, string password) {
+        public IActionResult Login([FromBody] AuthenticationData authentication) {
 
             try {
-                var user = _context.Users.Where(u => u.UserName == userName).FirstOrDefault();
+                var user = _context.Users.Where(u => u.UserName == authentication.UserName).FirstOrDefault();
 
                 if(user == null)
                     return NotFound("Não há usuário com este email");
 
-                if(!user.Password.Equals(password))
+                if(!user.Password.Equals(authentication.Password))
                     return BadRequest("Senha incorreta");
 
                 return Ok(user);
 
             } catch(Exception ex) {
                 return BadRequest(ex);
-            }    
+            }
+        }
+
+        public class AuthenticationData {
+            public string UserName { get; set; }
+            public string Password { get; set; }
         }
     }
 }

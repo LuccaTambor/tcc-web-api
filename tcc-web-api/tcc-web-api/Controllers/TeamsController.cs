@@ -65,7 +65,7 @@ namespace tcc_web_api.Controllers {
 
             _context.Teams.Attach(team);
 
-            team.Developers.Remove(dev);
+            team.Developers.Remove(dev);    
 
             _context.SaveChanges();
             return Ok();
