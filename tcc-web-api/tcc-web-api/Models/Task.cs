@@ -13,5 +13,9 @@ namespace tcc_web_api.Models {
         public DateTime ExpectedDate { get; set; }
         public DateTime? StartedOn { get; set; }
         public DateTime? FinishedOn { get; set; }
+
+        public Task() {
+            CreatedOn = DateTime.UtcNow;
+        }
     }
 }
