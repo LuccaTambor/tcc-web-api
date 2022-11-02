@@ -10,6 +10,7 @@ namespace tcc_web_api.Models {
         public DateTime? ExpectedFinishDate { get; set; }
         public Manager Manager { get; set; }
         public ICollection<Team> Teams { get; set; }
+        public ICollection<Occurrence> Occurrences { get; set; }
 
         public Project() { 
             CreatedOn = DateTime.Now;
