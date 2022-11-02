@@ -13,5 +13,6 @@ namespace tcc_web_api.Data {
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<Occurrence> Occurrences { get; set; }
     }
 }
