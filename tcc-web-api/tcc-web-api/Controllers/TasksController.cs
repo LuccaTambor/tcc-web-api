@@ -51,6 +51,7 @@ namespace tcc_web_api.Controllers {
                 Description = task.Description,
                 ExpectedDate = task.ExpectedDate,
                 Title = task.Title,
+                StartedOn = DateTime.UtcNow
             };
 
             newTask.Team = team;
