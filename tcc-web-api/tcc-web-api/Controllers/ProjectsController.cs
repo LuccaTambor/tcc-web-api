@@ -85,5 +85,64 @@ namespace tcc_web_api.Controllers {
 
             return Ok(projs);
         }
+
+        [HttpPost]
+        [Route("CreateProject")]
+        public IActionResult CreateProject([FromBody] ProjectModel project) {
+            if(project == null)
+                return BadRequest();
+
+            var manager = _context.Managers.FirstOrDefault(m => m.Id == project.ManagerId);
+
+            if(manager == null)
+                return NotFound();
+
+            Project newProject = new Project {
+                Description = project.Description,
+                ExpectedFinishDate = project.ExpectedFinishDate,
+                StartedOn = project.StartedOn,
+                Manager = manager
+            };
+
+            try {
+                _context.Projects.Add(newProject);
+                _context.SaveChanges();
+
+                var result = _context.Projects.Include(p => p.Teams).Where(m => m.Manager.Id == project.ManagerId).Select(p => new {
+                    p.Id,
+                    p.Description,
+                    p.ExpectedFinishDate,
+                    p.StartedOn,
+                    p.Teams
+                });
+
+                return Ok(result);
+            } 
+            catch(Exception ex) {
+                return BadRequest(ex);
+            }
+           
+        }
+
+        [HttpDelete]
+        [Route("removeProject")]
+        public IActionResult RemoveProjet(int projId) {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projId);
+
+            if(project == null)
+                return NotFound();
+
+            _context.Projects.Remove(project);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+        public class ProjectModel {
+            public string Description { get; set; }
+            public DateTime? StartedOn { get; set; }
+            public DateTime? ExpectedFinishDate { get; set; }
+            public string ManagerId { get; set; }
+        }
     }
 }
