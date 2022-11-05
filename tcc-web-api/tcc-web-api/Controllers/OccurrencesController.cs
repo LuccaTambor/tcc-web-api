@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using tcc_web_api.Data;
 using tcc_web_api.Models;
 using tcc_web_api.Models.Enums;
+using tcc_web_api.Utils;
 
 namespace tcc_web_api.Controllers {
     [Route("api/occurrences")]
@@ -12,6 +13,27 @@ namespace tcc_web_api.Controllers {
 
         public OccurrencesController(TCCDbContext context) {
             _context = context;
+        }
+
+        [HttpGet]
+        [Route("getOccurrences")]
+        public IActionResult GetOccurrences(int projId) {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projId);
+
+            if(project == null) 
+                return NotFound();
+
+            var result = _context.Occurrences.Where(o => o.Project.Id == projId)
+                .Select(o => new {
+                    o.Id,
+                    o.OccurrenceType,
+                    TypeText = o.OccurrenceType.GetString(),
+                    Developer = o.Developer.Name,
+                    o.CreatedOn,
+                    Date = o.CreatedOn.ToString("dd/MM/yyyy")
+                });
+
+            return Ok(result);
         }
 
         [HttpPost]

@@ -47,7 +47,8 @@ namespace tcc_web_api.Controllers {
                         t.TeamName,
                         Developers = t.Developers.Select(d => d.Name),
                         TaskNum = t.Tasks.Where(task => task.StartedOn.HasValue && !task.FinishedOn.HasValue).Count()
-                    })
+                    }),
+                    OccurrencesInProject = p.Occurrences.Count()
                 })
                 .SingleOrDefault(p => p.Id == id);
 
