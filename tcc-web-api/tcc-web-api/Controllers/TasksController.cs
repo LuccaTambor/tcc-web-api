@@ -19,14 +19,15 @@ namespace tcc_web_api.Controllers {
         [HttpGet]
         [Route("getOnGoingTask")]
         public IActionResult GetOnGoingTasks(int teamId) {
-            var onGoingTasks = _context.Tasks.Include(t => t.Team).Where(t => t.Team.Id == teamId).Where(t => t.StartedOn.HasValue && !t.FinishedOn.HasValue)
+            var onGoingTasks = _context.Tasks.Include(t => t.Team).Where(t => t.Team.Id == teamId)
                 .Select(t => new {
                     t.Id,
                     t.Description,
                     t.StartedOn,
                     t.ExpectedDate,
                     t.Code,
-                    t.Title
+                    t.Title,
+                    t.FinishedOn
                 });
 
             return Ok(onGoingTasks);
@@ -51,7 +52,6 @@ namespace tcc_web_api.Controllers {
                 Description = task.Description,
                 ExpectedDate = task.ExpectedDate,
                 Title = task.Title,
-                StartedOn = DateTime.UtcNow
             };
 
             newTask.Team = team;
