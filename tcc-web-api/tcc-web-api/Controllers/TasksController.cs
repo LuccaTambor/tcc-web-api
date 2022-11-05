@@ -76,17 +76,23 @@ namespace tcc_web_api.Controllers {
             task.FinishedOn = DateTime.UtcNow;
             _context.SaveChanges();
 
-            var onGoingTasks = _context.Tasks.Include(t => t.Team).Where(t => t.Team.Id == task.Team.Id).Where(t => t.StartedOn.HasValue && !t.FinishedOn.HasValue)
-                .Select(t => new {
-                    t.Id,
-                    t.Description,
-                    t.StartedOn,
-                    t.ExpectedDate,
-                    t.Code,
-                    t.Title
-                });
+            return Ok();
+        }
 
-            return Ok(onGoingTasks);
+        [HttpPut]
+        [Route("markAsStarted")]
+        public IActionResult MarkAsStaretd(int taskId) {
+
+            var task = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
+
+            if(task == null)
+                return NotFound();
+
+            task.StartedOn = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            return Ok();
+
         }
 
 

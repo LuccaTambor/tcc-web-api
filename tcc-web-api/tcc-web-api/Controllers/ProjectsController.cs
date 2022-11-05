@@ -36,6 +36,19 @@ namespace tcc_web_api.Controllers {
         public IActionResult GetProject(int id) {
             var project = _context.Projects
                 .Include(p => p.Teams)
+                .Select(p => new {
+                    p.Id,
+                    p.CreatedOn,
+                    p.Description,
+                    p.ExpectedFinishDate,
+                    p.StartedOn,
+                    Teams = p.Teams.Select(t => new {
+                        t.Id,
+                        t.TeamName,
+                        Developers = t.Developers.Select(d => d.Name),
+                        TaskNum = t.Tasks.Where(task => task.StartedOn.HasValue && !task.FinishedOn.HasValue).Count()
+                    })
+                })
                 .SingleOrDefault(p => p.Id == id);
 
             return Ok(project);
@@ -51,7 +64,9 @@ namespace tcc_web_api.Controllers {
                 p.ExpectedFinishDate,
                 Teams = p.Teams.Where(t => t.Developers.Any(d => d.Id == devId)).Select(t => new {
                     t.Id,
-                    t.TeamName
+                    t.TeamName,
+                    Developers = t.Developers.Select(d => d.Name),
+                    TaskNum = t.Tasks.Where(task => task.StartedOn.HasValue && !task.FinishedOn.HasValue).Count()
                 })
             }).FirstOrDefault();
 
