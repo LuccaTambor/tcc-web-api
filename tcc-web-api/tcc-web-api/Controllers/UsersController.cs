@@ -90,7 +90,7 @@ namespace tcc_web_api.Controllers {
                 var user = _context.Users.Where(u => u.UserName == authentication.UserName).FirstOrDefault();
 
                 if(user == null)
-                    return NotFound("Não há usuário com este email");
+                    return BadRequest("Não há usuário com este email");
 
                 if(!user.Password.Equals(authentication.Password))
                     return BadRequest("Senha incorreta");
