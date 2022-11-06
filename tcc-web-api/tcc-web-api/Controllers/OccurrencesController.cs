@@ -30,7 +30,8 @@ namespace tcc_web_api.Controllers {
                     TypeText = o.OccurrenceType.GetString(),
                     Developer = o.Developer.Name,
                     o.CreatedOn,
-                    Date = o.CreatedOn.ToString("dd/MM/yyyy")
+                    Date = o.CreatedOn.ToString("dd/MM/yyyy"),
+                    o.Description
                 });
 
             return Ok(result);
