@@ -32,7 +32,7 @@ namespace tcc_web_api.Controllers {
                     o.CreatedOn,
                     Date = o.CreatedOn.ToString("dd/MM/yyyy"),
                     o.Description
-                });
+                }).OrderByDescending(x => x.CreatedOn);
 
             return Ok(result);
         }
