@@ -83,6 +83,30 @@ namespace tcc_web_api.Controllers {
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        [Route("CreateMainManager")]
+        public IActionResult CreateMainManager() {
+            Manager manager = new Manager {
+                Name = "Gerente Padrão",
+                Document = "12345678911",
+                UserName = "admin123",
+                Password = "game123",
+                ConfirmPassword = "game123",
+                Designation = "Gerente de Projetos Sênior Teste",
+                Email = "teste.teste@mail.com",
+                PhoneNumber = "1799999999"
+            };
+
+            try {
+                _context.Managers.Add(manager);
+                _context.SaveChanges();
+                return Ok();
+            } catch(Exception ex) {
+                return Content(ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("login")]
         public IActionResult Login([FromBody] AuthenticationData authentication) {
 
