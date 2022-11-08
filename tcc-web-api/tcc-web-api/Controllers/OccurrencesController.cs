@@ -21,7 +21,7 @@ namespace tcc_web_api.Controllers {
             var project = _context.Projects.FirstOrDefault(p => p.Id == projId);
 
             if(project == null) 
-                return NotFound();
+                return BadRequest("Projeto não existe.");
 
             var result = _context.Occurrences.Where(o => o.Project.Id == projId)
                 .Select(o => new {
@@ -33,6 +33,31 @@ namespace tcc_web_api.Controllers {
                     Date = o.CreatedOn.ToString("dd/MM/yyyy"),
                     o.Description
                 }).OrderByDescending(x => x.CreatedOn);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getOccurrencesDev")]
+        public IActionResult GetOccurrencesFromDev(int projId, string devId) {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projId);
+            var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
+
+            if(project == null)
+                return BadRequest("Projeto não existe.");
+
+            if(dev == null)
+                return BadRequest("Usuário não existe");
+
+            var result = _context.Occurrences.Where(o => o.Project.Id == projId).Where(o => o.Developer.Id == devId)
+               .Select(o => new {
+                   o.Id,
+                   o.OccurrenceType,
+                   TypeText = o.OccurrenceType.GetString(),
+                   o.CreatedOn,
+                   Date = o.CreatedOn.ToString("dd/MM/yyyy"),
+                   o.Description
+               }).OrderByDescending(x => x.CreatedOn);
 
             return Ok(result);
         }
