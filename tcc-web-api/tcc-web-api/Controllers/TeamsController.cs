@@ -66,23 +66,10 @@ namespace tcc_web_api.Controllers {
         [HttpPut]
         [Route("removeDevFromTeam")]
         public IActionResult RemoveDevFromTeam(string devId, int teamId) {
-            var team = _context.Teams.FirstOrDefault(t => t.Id == teamId);
+            var team = _context.Teams.Include(t=> t.Developers).FirstOrDefault(t => t.Id == teamId);
             var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
 
-            //if(team != null) {
-            //    foreach(var developer in team.Developers) {
-            //        if(developer.Id == devId) {
-            //            team.Developers.Remove(developer);
-            //        }
-            //    }
-            //}
-
-            foreach(Developer d in team.Developers) {
-                _context.Developers.Attach(d);
-
-                if(d.Id == devId)
-                    team.Developers.Remove(d);
-            }
+            team.Developers.Remove(dev);
 
             _context.SaveChanges();
             return Ok();
