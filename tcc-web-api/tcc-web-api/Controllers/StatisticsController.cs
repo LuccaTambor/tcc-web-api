@@ -45,7 +45,7 @@ namespace tcc_web_api.Controllers {
                         Date = o.CreatedOn.ToString("dd/MM/yyyy"),
                         DateMonth = o.CreatedOn.Date.ToString("MM/yyyy"),
                         DeveloperCreator = o.Developer.Name,
-                        Team = p.Teams.Where(t => t.Developers.Any(d => d.Id == o.Developer.Id)).Select(t => t.TeamName).FirstOrDefault()
+                        Team = o.Team.TeamName,
                     }),
                     OccurrencesNumber = p.Occurrences.Count(),
                     Teams = p.Teams.Select(t => new {

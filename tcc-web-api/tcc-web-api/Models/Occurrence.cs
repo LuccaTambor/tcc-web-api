@@ -9,6 +9,7 @@ namespace tcc_web_api.Models {
         public DateTime CreatedOn { get; set; }
         public Developer Developer { get; set; }
         public Project Project { get; set; }
+        public Team Team { get; set; }
         public OccurrenceType OccurrenceType { get; set; }
 
         public Occurrence() {

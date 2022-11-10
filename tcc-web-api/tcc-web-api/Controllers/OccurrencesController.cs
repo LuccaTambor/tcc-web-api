@@ -31,7 +31,8 @@ namespace tcc_web_api.Controllers {
                     Developer = o.Developer.Name,
                     o.CreatedOn,
                     Date = o.CreatedOn.ToString("dd/MM/yyyy"),
-                    o.Description
+                    o.Description,
+                    Team = o.Team.TeamName
                 }).OrderByDescending(x => x.CreatedOn);
 
             return Ok(result);
@@ -39,17 +40,17 @@ namespace tcc_web_api.Controllers {
 
         [HttpGet]
         [Route("getOccurrencesDev")]
-        public IActionResult GetOccurrencesFromDev(int projId, string devId) {
-            var project = _context.Projects.FirstOrDefault(p => p.Id == projId);
+        public IActionResult GetOccurrencesFromDev(int teamId, string devId) {
+            var team = _context.Teams.FirstOrDefault(p => p.Id == teamId);
             var dev = _context.Developers.FirstOrDefault(d => d.Id == devId);
 
-            if(project == null)
-                return BadRequest("Projeto não existe.");
+            if(team == null)
+                return BadRequest("Time não existe.");
 
             if(dev == null)
                 return BadRequest("Usuário não existe");
 
-            var result = _context.Occurrences.Where(o => o.Project.Id == projId).Where(o => o.Developer.Id == devId)
+            var result = _context.Occurrences.Where(o => o.Team.Id == teamId).Where(o => o.Developer.Id == devId)
                .Select(o => new {
                    o.Id,
                    o.OccurrenceType,
@@ -70,6 +71,7 @@ namespace tcc_web_api.Controllers {
 
             var project = _context.Projects.FirstOrDefault(p => p.Teams.Any(t => t.Id == occurrenceModel.TeamId));
             var developer = _context.Developers.FirstOrDefault(d => d.Id == occurrenceModel.DeveloperId);
+            var team = _context.Teams.FirstOrDefault(t => t.Id == occurrenceModel.TeamId);
 
             if( project == null|| developer == null)
                 return BadRequest();
@@ -78,7 +80,8 @@ namespace tcc_web_api.Controllers {
                 Description = occurrenceModel.Description,
                 OccurrenceType = occurrenceModel.OccurrenceType,
                 Project = project,
-                Developer = developer
+                Developer = developer,
+                Team = team
             };
 
             _context.Occurrences.Add(newOccurrence);
