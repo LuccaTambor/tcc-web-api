@@ -126,6 +126,22 @@ namespace tcc_web_api.Controllers {
             }
         }
 
+        [HttpDelete]
+        [Route("deleteDev")]
+        public IActionResult RemoveDev(string id) {
+            var dev = _context.Developers.Include(d => d.Teams).FirstOrDefault(d => d.Id == id);
+
+            var hasOcurrences = _context.Occurrences.Any(o => o.Developer == dev);
+
+            if(dev.Teams.Count() > 0 || hasOcurrences)
+                return BadRequest("Desenvolvedor não pode ser excluido");
+
+            _context.Developers.Remove(dev);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
         public class AuthenticationData {
             public string UserName { get; set; }
             public string Password { get; set; }
